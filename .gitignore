@@ -1,3 +1,6 @@
 env/
+build/
+dist/
 __pycache__/
 *.db
+main.spec
