@@ -8,7 +8,7 @@ import db_manager
 class TaskManager(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Gestor de Tareas")
+        self.setWindowTitle("Task Manager")
         self.setMinimumSize(800, 600)
         self.setBaseSize(800, 600)
         self.resize(800, 600)
@@ -29,11 +29,11 @@ class TaskManager(QMainWindow):
         layout = QHBoxLayout(main_widget)
         layout.setContentsMargins(10, 10, 10, 10)
 
-        # Configuración del panel izquierdo
+        # Left panel configuration
         left_panel = self.create_left_panel()
         layout.addWidget(left_panel)
 
-        # Configuración del panel derecho
+        # Right panel configuration
         right_panel = self.create_right_panel()
         layout.addWidget(right_panel)
 
@@ -48,9 +48,9 @@ class TaskManager(QMainWindow):
         left_panel.setFixedWidth(200)
         left_layout = QVBoxLayout(left_panel)
 
-        self.add_task_btn = QPushButton("Agregar Tarea")
+        self.add_task_btn = QPushButton("Add Task")
         self.add_task_btn.setFixedHeight(40)
-        self.close_app_btn = QPushButton("Cerrar Aplicación")
+        self.close_app_btn = QPushButton("Close app")
         self.close_app_btn.setFixedHeight(40)
 
         left_layout.addWidget(self.add_task_btn)
@@ -72,7 +72,7 @@ class TaskManager(QMainWindow):
         return right_panel
 
     def add_task(self):
-        name, ok = QInputDialog.getText(self, "Nueva Tarea", "Nombre de la tarea:")
+        name, ok = QInputDialog.getText(self, "New Task", "Task name:")
         if ok and name.strip():
             db_manager.add_task(self.conn, name)
             self.load_tasks()
@@ -106,12 +106,12 @@ class TaskManager(QMainWindow):
         button_layout = QHBoxLayout(button_container)
         button_layout.setContentsMargins(0, 0, 0, 0)
 
-        update_btn = QPushButton("Actualizar")
+        update_btn = QPushButton("Update")
         update_btn.setFixedSize(80, 30)
         update_btn.clicked.connect(lambda checked, tid=task_id: self.update_task(tid))
         button_layout.addWidget(update_btn)
 
-        delete_btn = QPushButton("Eliminar")
+        delete_btn = QPushButton("Delete")
         delete_btn.setFixedSize(80, 30)
         delete_btn.clicked.connect(lambda checked, tid=task_id: self.delete_task(tid))
         button_layout.addWidget(delete_btn)
@@ -122,7 +122,7 @@ class TaskManager(QMainWindow):
 
     def update_task(self, task_id):
         dialog = QDialog(self)
-        dialog.setWindowTitle("Actualizar Progreso")
+        dialog.setWindowTitle("Update Progress")
         dialog.setFixedSize(300, 150)
 
         layout = QVBoxLayout(dialog)
@@ -133,20 +133,20 @@ class TaskManager(QMainWindow):
         current_progress = db_manager.get_task_progress(self.conn, task_id)
         slider.setValue(current_progress)
 
-        value_label = QLabel(f"Progreso: {current_progress}%")
+        value_label = QLabel(f"Progress: {current_progress}%")
 
-        slider.valueChanged.connect(lambda: value_label.setText(f"Progreso: {slider.value()}%"))
+        slider.valueChanged.connect(lambda: value_label.setText(f"Progress: {slider.value()}%"))
 
         button_box = QHBoxLayout()
-        accept_btn = QPushButton("Aceptar")
-        cancel_btn = QPushButton("Cancelar")
+        accept_btn = QPushButton("Save")
+        cancel_btn = QPushButton("Cancel")
         accept_btn.clicked.connect(dialog.accept)
         cancel_btn.clicked.connect(dialog.reject)
 
         button_box.addWidget(accept_btn)
         button_box.addWidget(cancel_btn)
 
-        layout.addWidget(QLabel("Arrastra el slider para ajustar el progreso:"))
+        layout.addWidget(QLabel("Drag the slider to adjust the progress:"))
         layout.addWidget(slider)
         layout.addWidget(value_label)
         layout.addLayout(button_box)
@@ -156,8 +156,8 @@ class TaskManager(QMainWindow):
             self.load_tasks()
 
     def delete_task(self, task_id):
-        reply = QMessageBox.question(self, "Confirmar Eliminación",
-                                     "¿Estás seguro de que deseas eliminar esta tarea?",
+        reply = QMessageBox.question(self, "confirm deletion",
+                                     "¿Are you sure you want to delete this task??",
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         
         if reply == QMessageBox.StandardButton.Yes:

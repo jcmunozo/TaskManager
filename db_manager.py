@@ -4,15 +4,15 @@ import sys
 
 def get_exe_path():
     if getattr(sys, 'frozen', False):
-        # Obtiene la ruta del ejecutable
+        # Get the path to the executable
         return os.path.dirname(sys.executable)
     else:
-        # En desarrollo, usa la ruta del script
+        # On dev, use the path where the script is
         return os.path.dirname(os.path.abspath(__file__))
 
 def init_database():
     try:
-        # Obtiene la ruta donde está el ejecutable
+        # get the path to the exe
         exe_dir = get_exe_path()
         db_path = os.path.join(exe_dir, "tasks.db")
         
@@ -38,7 +38,7 @@ def add_task(conn, name):
         cursor.execute("INSERT INTO tasks (name, progress) VALUES (?, ?)", (name, 0))
         conn.commit()
     except Exception as e:
-        print(f"Error al añadir tarea: {e}")
+        print(f"error initializing database: {e}")
         conn.rollback()
 
 def get_tasks(conn):
@@ -49,7 +49,7 @@ def get_tasks(conn):
         cursor.execute("SELECT id, name, progress FROM tasks")
         return cursor.fetchall()
     except Exception as e:
-        print(f"Error al obtener tareas: {e}")
+        print(f"error getting tasks: {e}")
         return []
 
 def get_task_progress(conn, task_id):
@@ -61,7 +61,7 @@ def get_task_progress(conn, task_id):
         result = cursor.fetchone()
         return result[0] if result else None
     except Exception as e:
-        print(f"Error al obtener progreso: {e}")
+        print(f"error getting progress: {e}")
         return None
 
 def update_task_progress(conn, task_id, progress):
@@ -72,7 +72,7 @@ def update_task_progress(conn, task_id, progress):
         cursor.execute("UPDATE tasks SET progress = ? WHERE id = ?", (progress, task_id))
         conn.commit()
     except Exception as e:
-        print(f"Error al actualizar progreso: {e}")
+        print(f"Error updating progress: {e}")
         conn.rollback()
 
 def delete_task(conn, task_id):
@@ -83,7 +83,7 @@ def delete_task(conn, task_id):
         cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
         conn.commit()
     except Exception as e:
-        print(f"Error al eliminar tarea: {e}")
+        print(f"Error deleting task: {e}")
         conn.rollback()
 
 def clear_layout(layout):
