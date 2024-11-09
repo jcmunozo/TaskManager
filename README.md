@@ -45,7 +45,7 @@ add this in it:
 Name=TaskManager
 Comment=A task manager writen in PyQt6
 Exec=/path/to/ejecutable/main  # Change it to your path
-Icon=/ruta/al/icono.png        # Change it to your path
+Icon=/path/to/icono.png        # Change it to your path
 Terminal=false
 Type=Application
 Categories=Utility;            # Other categories could be: Development; Productivity;
