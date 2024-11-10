@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import (QMainWindow, QApplication, QWidget, QVBoxLayout, QHBoxLayout,
                              QPushButton, QLabel, QSizePolicy, QProgressBar,
-                             QScrollArea, QInputDialog, QMessageBox, QDialog, QSlider)
+                             QScrollArea, QInputDialog, QMessageBox, QDialog, QSlider, QCheckBox)
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QScreen
 import db_manager
@@ -40,6 +40,67 @@ class TaskManager(QMainWindow):
         self.add_task_btn.clicked.connect(self.add_task)
         self.close_app_btn.clicked.connect(self.close)
 
+        self.light_mode_checkbox.stateChanged.connect(self.toggle_theme)
+
+        self.base_style = """
+            QPushButton {
+                min-height: 27px;
+            }
+        """
+
+        self.dark_style = """
+            QMainWindow, QDialog {
+                background-color: #2e2e2e;
+                color: #ffffff;
+            }
+            QWidget {
+                background-color: #2e2e2e;
+                color: #ffffff;
+            }
+            QPushButton {
+                background-color: #424242;
+                color: #ffffff;
+                min-height: 27px;
+            }
+            QPushButton:hover {
+                background-color: #525252;
+            }
+            QLabel {
+                color: #ffffff;
+            }
+            QProgressBar {
+                border: 2px solid #424242;
+                border-radius: 5px;
+                text-align: center;
+                color: #ffffff;
+            }
+            QProgressBar::chunk {
+                background-color: #2979ff;
+                border-radius: 3px;
+            }
+            QScrollArea {
+                border: 1px solid #424242;
+            }
+            QCheckBox {
+                color: #ffffff;
+                spacing: 5px;
+            }
+            QCheckBox::indicator {
+                border: 1px solid #2979ff;
+                background-color: #424242;
+    }
+            QInputDialog QLineEdit {
+                background-color: #424242;
+                color: #ffffff;
+                border: 1px solid #525252;
+                padding: 5px;
+            }
+            QMessageBox {
+                background-color: #2e2e2e;
+            }
+        """
+
+        self.setStyleSheet(self.dark_style)
         self.load_tasks()
         self.setFixedSize(self.size())
 
@@ -49,12 +110,12 @@ class TaskManager(QMainWindow):
         left_layout = QVBoxLayout(left_panel)
 
         self.add_task_btn = QPushButton("Add Task")
-        self.add_task_btn.setFixedHeight(40)
         self.close_app_btn = QPushButton("Close app")
-        self.close_app_btn.setFixedHeight(40)
+        self.light_mode_checkbox = QCheckBox("Light Mode")
 
         left_layout.addWidget(self.add_task_btn)
         left_layout.addStretch()
+        left_layout.addWidget(self.light_mode_checkbox)
         left_layout.addWidget(self.close_app_btn)
 
         return left_panel
@@ -163,6 +224,12 @@ class TaskManager(QMainWindow):
         if reply == QMessageBox.StandardButton.Yes:
             db_manager.delete_task(self.conn, task_id)
             self.load_tasks()
-    
+
+    def toggle_theme(self, state):
+        if state == Qt.CheckState.Checked.value:
+            self.setStyleSheet(self.base_style)
+        else:
+            self.setStyleSheet(self.dark_style)
+
     def closeEvent(self, event):
         self.conn.close()
